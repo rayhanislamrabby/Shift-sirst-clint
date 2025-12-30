@@ -17,7 +17,7 @@ const Baneer = () => {
                 </div>
                 <div>
                     <img src={banner3} />
-                    <p className="legend">Legend 3</p>
+                    <p className="legend">Legend</p>
                 </div>
             </Carousel>
     );

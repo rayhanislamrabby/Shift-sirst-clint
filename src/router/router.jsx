@@ -6,6 +6,8 @@ import Login from "../pages/Authentication/Login/Login";
 import Register from "../pages/Authentication/Register/Register";
 import Covarage from "../pages/Covarage/Covarage";
 
+
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -17,11 +19,11 @@ export const router = createBrowserRouter([
       },
 
       {
-
-        path:"covarage",
+        path: "covarage",
         Component: Covarage,
-
-      }
+        loader: () => fetch('../../public/serviceCenter.json.json')
+     
+      },
     ],
   },
 
@@ -34,11 +36,9 @@ export const router = createBrowserRouter([
         Component: Login,
       },
       {
-path: "register",
-Component: Register,
-
-
-      }
+        path: "register",
+        Component: Register,
+      },
     ],
   },
 ]);

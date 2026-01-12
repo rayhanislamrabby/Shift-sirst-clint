@@ -7,6 +7,8 @@ import Register from "../pages/Authentication/Register/Register";
 import Covarage from "../pages/Covarage/Covarage";
 import PrivateRoutes from "../routers/PrivateRoutes";
 import SendParcel from "../pages/SendParcel/SendParcel";
+import DashbordLayout from "../layout/DashbordLayout";
+import MyParcels from "../pages/Dashbord/MyParcels/MyParcels";
 
 export const router = createBrowserRouter([
   {
@@ -26,11 +28,12 @@ export const router = createBrowserRouter([
       {
         path: "sendParcel",
         element: (
-          <PrivateRoutes><SendParcel></SendParcel></PrivateRoutes>
-          
+          <PrivateRoutes>
+            <SendParcel></SendParcel>
+          </PrivateRoutes>
         ),
 
-         loader: () => fetch("../../public/serviceCenter.json.json"),
+        loader: () => fetch("../../public/serviceCenter.json.json"),
       },
     ],
   },
@@ -46,6 +49,22 @@ export const router = createBrowserRouter([
       {
         path: "register",
         Component: Register,
+      },
+    ],
+  },
+
+  {
+    path: "/dashbord",
+    element: (
+      <PrivateRoutes>
+        <DashbordLayout></DashbordLayout>
+      </PrivateRoutes>
+    ),
+
+    children: [
+      {
+        path: "myParcels",
+        Component: MyParcels,
       },
     ],
   },

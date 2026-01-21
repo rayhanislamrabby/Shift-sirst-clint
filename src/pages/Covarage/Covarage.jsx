@@ -17,7 +17,7 @@ console.log(serviceCenter)
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#0B3F45]">
             We Are Available in 64 Districts
           </h1>
-          <p className="text-gray-500 mt-2 text-sm sm:text-base">
+          <p className="text-gray-500 mt-2 text-sm sm:text-base mb-9">
             Nationwide parcel delivery across Bangladesh
           </p>
 

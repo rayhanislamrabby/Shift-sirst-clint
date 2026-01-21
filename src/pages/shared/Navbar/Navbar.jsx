@@ -4,7 +4,16 @@ import ShiftFirstLogo from "./ShiftFirstLogo";
 import useAuth from "../../../hook/useAuth";
 
 const Navbar = () => {
-  const { user } = useAuth();
+  const { user, logOut } = useAuth();
+
+const handelLogOut =() => {
+
+logOut()
+.then(result => { console.log(result)})
+.catch(error => console.log(error))
+
+}
+
   const navItems = (
     <>
       <li>
@@ -43,13 +52,13 @@ const Navbar = () => {
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              {" "}
+             
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"
                 d="M4 6h16M4 12h8m-8 6h16"
-              />{" "}
+              />
             </svg>
           </div>
           <ul
@@ -68,9 +77,15 @@ const Navbar = () => {
         <ul className="menu menu-horizontal px-1">{navItems}</ul>
       </div>
       <div className="navbar-end">
-        <Link to="/login" className="btn btn-primary text-black">
-          Login
-        </Link>
+        {user ? 
+          <button className="btn btn-primary text-black" onClick={handelLogOut}>
+            Sing Out
+          </button>
+         : 
+          <Link to="/login" className="btn btn-primary text-black">
+            Login
+          </Link>
+        }
       </div>
     </div>
   );

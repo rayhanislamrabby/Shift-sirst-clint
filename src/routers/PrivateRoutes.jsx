@@ -1,10 +1,13 @@
 import React from "react";
 import useAuth from "../hook/useAuth";
 import GridLoader from "react-spinners/GridLoader";
-import { Navigate } from "react-router";
+import { Navigate, useLocation } from "react-router";
 
 const PrivateRoutes = ({ children }) => {
   const { user, loading } = useAuth();
+const location = useLocation();
+
+
 
   if (loading) {
     return (
@@ -15,7 +18,7 @@ const PrivateRoutes = ({ children }) => {
   }
 
   if (!user) {
-    <Navigate to="/login"></Navigate>;
+   return <Navigate state={{from: location.pathname}} to="/login"></Navigate>;
   }
 
   return children;

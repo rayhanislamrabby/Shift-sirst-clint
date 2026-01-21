@@ -2,10 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../../hook/useAuth";
 import useAxiosSecures from "../../../hook/useAxiosSecures";
 import Swal from "sweetalert2";
+import { Navigate, useNavigate } from "react-router";
 
 const MyParcels = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecures();
+  const naviget = useNavigate();
 
   const {
     data: parcels = [],
@@ -15,6 +17,7 @@ const MyParcels = () => {
     queryKey: ["my-parcels", user?.email],
     queryFn: async () => {
       const res = await axiosSecure.get(`/parcels?email=${user.email}`);
+      console.log("Database response:", res.data);
       return res.data;
     },
   });
@@ -30,9 +33,20 @@ const MyParcels = () => {
     });
 
     if (result.isConfirmed) {
-      await axiosSecure.delete(`/parcels/${id}`);
-      refetch();
-      Swal.fire("Deleted!", "Parcel removed", "success");
+      try {
+        const res = await axiosSecure.delete(
+          `/parcels/${id}?email=${user.email}`,
+        );
+
+        console.log(res.data);
+
+        await refetch();
+
+        Swal.fire("Deleted!", "Parcel removed", "success");
+      } catch (error) {
+        console.error(error);
+        Swal.fire("Error", "Failed to delete parcel", "error");
+      }
     }
   };
 
@@ -47,9 +61,7 @@ const MyParcels = () => {
     });
 
     if (result.isConfirmed) {
-      await axiosSecure.patch(`/parcels/pay/${id}`);
-      refetch();
-      Swal.fire("Paid!", "Payment successful", "success");
+      naviget(`/dashbord/payment/${id}`);
     }
   };
 
@@ -67,6 +79,7 @@ const MyParcels = () => {
           <thead className="bg-gray-200 text-black">
             <tr>
               <th>#</th>
+              <th>Name</th>
               <th>Type</th>
               <th>Cost</th>
               <th>Status</th>
@@ -79,13 +92,14 @@ const MyParcels = () => {
             {parcels.map((parcel, index) => (
               <tr key={parcel._id}>
                 <th>{index + 1}</th>
+                <td className="capitalize">{parcel.parcelTitle || parcel.parcelName || "N/A"}</td>
                 <td className="capitalize">
-                  {parcel.parcelType.replace("-", " ")}
+                  {parcel.parcelType ? parcel.parcelType.replace("-", " ") : "N/A"}
                 </td>
                 <td>৳ {parcel.deliveryCost}</td>
                 <td>
                   <span
-                    className={`badge text-white ${
+                    className={`badge text-black ${
                       parcel.payment_status === "paid"
                         ? "badge-success"
                         : "badge-warning"
@@ -94,9 +108,7 @@ const MyParcels = () => {
                     {parcel.payment_status}
                   </span>
                 </td>
-                <td>
-                  {new Date(parcel.creation_date).toLocaleDateString()}
-                </td>
+                <td>{new Date(parcel.creation_date).toLocaleDateString()}</td>
                 <td className="flex gap-2 justify-center">
                   <button className="btn btn-xs btn-info">View</button>
 
@@ -129,12 +141,17 @@ const MyParcels = () => {
             key={parcel._id}
             className="border rounded-lg p-4 shadow-sm bg-base-100"
           >
-            <div className="flex justify-between">
-              <h3 className="font-semibold capitalize">
-                {parcel.parcelType.replace("-", " ")}
-              </h3>
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <h3 className="font-semibold capitalize text-lg">
+                  {parcel.parcelTitle || parcel.parcelName || "N/A"}
+                </h3>
+                <p className="text-sm text-gray-600 capitalize">
+                  {parcel.parcelType ? parcel.parcelType.replace("-", " ") : "N/A"}
+                </p>
+              </div>
               <span
-                className={`badge text-white ${
+                className={`badge text-black ${
                   parcel.payment_status === "paid"
                     ? "badge-success"
                     : "badge-warning"
@@ -176,9 +193,7 @@ const MyParcels = () => {
       </div>
 
       {parcels.length === 0 && (
-        <p className="text-center mt-6 text-gray-500">
-          No parcels found
-        </p>
+        <p className="text-center mt-6 text-gray-500">No parcels found</p>
       )}
     </div>
   );

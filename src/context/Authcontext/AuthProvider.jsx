@@ -44,7 +44,7 @@ return signInWithPopup(auth, googleProvider)
 
 
   const logOut = () => {
-    loading(true);
+    // loading(true);
 
     return signOut(auth);
   };

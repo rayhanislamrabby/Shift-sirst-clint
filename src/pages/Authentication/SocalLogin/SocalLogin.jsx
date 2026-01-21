@@ -1,21 +1,29 @@
 import React from "react";
 import useAuth from "../../../hook/useAuth";
+import { useLocation, useNavigate } from "react-router";
 
 const SocalLogin = () => {
 
 const {sinInwidthGoogle} =useAuth();
+
+const location = useLocation();
+const navigate = useNavigate();
+const from = location.state?.from || '/'
+
 
 const handelGoogleSingIn = () => {
 
 sinInwidthGoogle()
 .then(result => {
 
-console.log(result.user)
+console.log(result.user);
+
+navigate(from);
 
 })
 .catch( error => {
 
-console.error(error)
+console.error(error);
 
 })
 

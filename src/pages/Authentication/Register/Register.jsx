@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import useAuth from "../../../hook/useAuth";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import SocalLogin from "../SocalLogin/SocalLogin";
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -16,7 +16,12 @@ const Register = () => {
 
   const { createUser, updateUserProfile } = useAuth();
   const [profilePic, setprofilePic] = useState("");
-const axiosinstance = useAxios();
+  const axiosinstance = useAxios();
+ const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state?.from || "/";
+
+
   const onsubmit = (data) => {
     console.log(data);
     createUser(data.email, data.password)
@@ -32,10 +37,8 @@ const axiosinstance = useAxios();
           last_log_in: new Date().toISOString(),
         };
 
-
-const userRes = await axiosinstance.post('/users', userInfo);
-console.log(userRes.data)
-
+        const userRes = await axiosinstance.post("/users", userInfo);
+        console.log(userRes.data);
 
         // update user profile in firebase
         const userProfile = {
@@ -45,6 +48,7 @@ console.log(userRes.data)
         updateUserProfile(userProfile)
           .then(() => {
             console.log("profile name pic pdate ");
+            navigate(from);
           })
           .catch((error) => {
             console.log(error);
@@ -64,8 +68,8 @@ console.log(userRes.data)
     const imgUploadUrl = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_upload_key}`;
 
     const res = await axios.post(imgUploadUrl, formData);
-  // ✅ ONLY STRING URL
-  setprofilePic(res.data.data.display_url);
+    // ✅ ONLY STRING URL
+    setprofilePic(res.data.data.display_url);
     // setprofilePic(res.data);
   };
 

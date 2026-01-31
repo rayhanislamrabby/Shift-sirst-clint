@@ -5,6 +5,7 @@ import useAxiosSecures from "../../../hook/useAxiosSecures";
 const PendingRiders = () => {
   const axiosSecure = useAxiosSecures();
 
+  /* ================= FETCH PENDING RIDERS ================= */
   const {
     data: riders = [],
     isLoading,
@@ -12,31 +13,34 @@ const PendingRiders = () => {
   } = useQuery({
     queryKey: ["pending-riders"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/riders/pending");
-      return res.data;
+      const { data } = await axiosSecure.get("/riders/pending");
+      return data;
     },
   });
 
-  /* ================= View Rider ================= */
+  /* ================= VIEW RIDER ================= */
   const handleView = (rider) => {
     Swal.fire({
-      title: rider.name,
+      title: rider?.name || "Rider Details",
       html: `
         <div style="text-align:left">
-          <img src="${rider.photoURL}" 
-               style="width:80px;height:80px;border-radius:50%;margin-bottom:10px"/>
-
-          <p><b>Email:</b> ${rider.email}</p>
-          <p><b>Phone:</b> ${rider.phone}</p>
-          <p><b>Age:</b> ${rider.age}</p>
-          <p><b>Region:</b> ${rider.region}</p>
-          <p><b>District:</b> ${rider.district}</p>
-          <p><b>Bike Brand:</b> ${rider.bike_brand}</p>
-          <p><b>Bike Reg:</b> ${rider.bike_registration}</p>
-          <p><b>NID:</b> ${rider.nid}</p>
-          <p><b>Applied At:</b> ${new Date(
-            rider.applied_at
-          ).toLocaleString()}</p>
+          <img 
+            src="${rider?.photoURL || "/default-avatar.png"}"
+            style="width:80px;height:80px;border-radius:50%;margin-bottom:10px"
+          />
+          <p><b>Email:</b> ${rider?.email || "N/A"}</p>
+          <p><b>Phone:</b> ${rider?.phone || "N/A"}</p>
+          <p><b>Age:</b> ${rider?.age || "N/A"}</p>
+          <p><b>Region:</b> ${rider?.region || "N/A"}</p>
+          <p><b>District:</b> ${rider?.district || "N/A"}</p>
+          <p><b>Bike Brand:</b> ${rider?.bike_brand || "N/A"}</p>
+          <p><b>Bike Reg:</b> ${rider?.bike_registration || "N/A"}</p>
+          <p><b>NID:</b> ${rider?.nid || "N/A"}</p>
+          <p><b>Applied At:</b> ${
+            rider?.applied_at
+              ? new Date(rider.applied_at).toLocaleString()
+              : "N/A"
+          }</p>
         </div>
       `,
       showCloseButton: true,
@@ -44,32 +48,44 @@ const PendingRiders = () => {
     });
   };
 
-  /* ================= Accept / Reject ================= */
-  const handleUpdateStatus = async (id, status) => {
-    const action = status === "active" ? "Accept" : "Reject";
+  /* ================= ACCEPT / REJECT ================= */
+  const handleUpdateStatus = async (id, status, email) => {
+    const isAccept = status === "active";
 
     const result = await Swal.fire({
-      title: `${action} Rider?`,
-      text: `Are you sure you want to ${action.toLowerCase()} this rider?`,
-      icon: status === "active" ? "question" : "warning",
+      title: isAccept ? "Accept Rider?" : "Reject Rider?",
+      text: `Are you sure you want to ${
+        isAccept ? "accept" : "reject"
+      } this rider?`,
+      icon: isAccept ? "question" : "warning",
       showCancelButton: true,
-      confirmButtonText: action,
+      confirmButtonText: isAccept ? "Accept" : "Reject",
+      confirmButtonColor: isAccept ? "#3085d6" : "#d33",
     });
 
-    if (result.isConfirmed) {
-      try {
-        await axiosSecure.patch(`/riders/status/${id}`, { status });
+    if (!result.isConfirmed) return;
 
-        Swal.fire(
-          "Success!",
-          `Rider ${action.toLowerCase()}ed successfully`,
-          "success"
-        );
+    try {
+      await axiosSecure.patch(`/riders/status/${id}`, {
+        status,
+        email, // remove if backend doesn't need it
+      });
 
-        refetch();
-      } catch (error) {
-        Swal.fire("Error", "Failed to update rider status", "error", error);
-      }
+      Swal.fire(
+        "Success!",
+        `Rider ${isAccept ? "accepted" : "rejected"} successfully`,
+        "success"
+      );
+
+      refetch();
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text:
+          error?.response?.data?.message ||
+          "Failed to update rider status",
+        icon: "error",
+      });
     }
   };
 
@@ -90,6 +106,7 @@ const PendingRiders = () => {
             <tr>
               <th>#</th>
               <th>Name</th>
+             
               <th>Region</th>
               <th>District</th>
               <th>Status</th>
@@ -102,6 +119,7 @@ const PendingRiders = () => {
               <tr key={rider._id}>
                 <th>{index + 1}</th>
                 <td className="capitalize">{rider.name}</td>
+             
                 <td>{rider.region}</td>
                 <td>{rider.district}</td>
                 <td>
@@ -119,7 +137,11 @@ const PendingRiders = () => {
 
                   <button
                     onClick={() =>
-                      handleUpdateStatus(rider._id, "active")
+                      handleUpdateStatus(
+                        rider._id,
+                        "active",
+                        rider.email
+                      )
                     }
                     className="btn btn-xs btn-success"
                   >
@@ -128,7 +150,11 @@ const PendingRiders = () => {
 
                   <button
                     onClick={() =>
-                      handleUpdateStatus(rider._id, "rejected")
+                      handleUpdateStatus(
+                        rider._id,
+                        "rejected",
+                        rider.email
+                      )
                     }
                     className="btn btn-xs btn-error"
                   >
@@ -150,7 +176,7 @@ const PendingRiders = () => {
           >
             <div className="flex items-center gap-3">
               <img
-                src={rider.photoURL}
+                src={rider?.photoURL || "/default-avatar.png"}
                 alt="rider"
                 className="w-14 h-14 rounded-full border"
               />
@@ -176,7 +202,11 @@ const PendingRiders = () => {
 
               <button
                 onClick={() =>
-                  handleUpdateStatus(rider._id, "active")
+                  handleUpdateStatus(
+                    rider._id,
+                    "active",
+                    rider.email
+                  )
                 }
                 className="btn btn-xs btn-success"
               >
@@ -185,7 +215,11 @@ const PendingRiders = () => {
 
               <button
                 onClick={() =>
-                  handleUpdateStatus(rider._id, "rejected")
+                  handleUpdateStatus(
+                    rider._id,
+                    "rejected",
+                    rider.email
+                  )
                 }
                 className="btn btn-xs btn-error"
               >

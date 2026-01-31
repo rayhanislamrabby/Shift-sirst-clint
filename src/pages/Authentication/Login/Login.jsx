@@ -12,11 +12,9 @@ const Login = () => {
     formState: { errors },
   } = useForm();
   const { singIn } = useAuth();
+  const axiosinstance = useAxios();
   const location = useLocation();
   const navigate = useNavigate();
-
-  const axiosinstance = useAxios();
-
   const from = location.state?.from || "/";
 
   const onsubmit = (data) => {

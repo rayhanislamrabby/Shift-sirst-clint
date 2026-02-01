@@ -15,6 +15,8 @@ import BeaRaider from "../pages/Dashbord/BeaRaider/BeaRaider";
 import pendingRiders from "../pages/Dashbord/PendingRider/pendingRiders";
 import ActiveRider from "../pages/Dashbord/ActiveRiders/ActiveRider";
 
+import MakeAdmin from "../pages/Dashbord/MakeAdmin/MakeAdmin";
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -96,10 +98,13 @@ export const router = createBrowserRouter([
         Component: pendingRiders,
       },
       {
-
-        path: 'ActiveRider',
+        path: "ActiveRider",
         Component: ActiveRider,
-      }
+      },
+      {
+        path: "MakeAdmin",
+        Component: MakeAdmin,
+      },
     ],
   },
 ]);

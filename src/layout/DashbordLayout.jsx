@@ -10,7 +10,11 @@ import {
   FaCrown,
   FaMotorcycle,
   FaUserClock,
+  FaUsers
 } from "react-icons/fa";
+
+
+
 import { useState } from "react";
 import ShiftFirstLogo from "../pages/shared/Navbar/ShiftFirstLogo";
 
@@ -101,6 +105,13 @@ const DashbordLayout = () => {
             to="/dashbord/pendingRiders"
             icon={<FaUserClock />}
             label="Pending Riders"
+            collapsed={collapsed}
+          />
+
+          <NavItem
+            to="/dashbord/MakeAdmin"
+            icon={<FaUsers />}
+            label="Make Admin"
             collapsed={collapsed}
           />
         </nav>

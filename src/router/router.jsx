@@ -12,10 +12,12 @@ import MyParcels from "../pages/Dashbord/MyParcels/MyParcels";
 import Payment from "../pages/Dashbord/Payment/Payment";
 import PaymentHistory from "../pages/Dashbord/PaymentHistory/PaymentHistory";
 import BeaRaider from "../pages/Dashbord/BeaRaider/BeaRaider";
-import pendingRiders from "../pages/Dashbord/PendingRider/pendingRiders";
+import PendingRiders from "../pages/Dashbord/PendingRider/pendingRiders";
 import ActiveRider from "../pages/Dashbord/ActiveRiders/ActiveRider";
 
 import MakeAdmin from "../pages/Dashbord/MakeAdmin/MakeAdmin";
+import Forbidden from "../pages/Forbidden/Forbidden";
+import AdminRoute from "../routers/AdminRoute";
 
 export const router = createBrowserRouter([
   {
@@ -32,7 +34,10 @@ export const router = createBrowserRouter([
         Component: Covarage,
         loader: () => fetch("../../public/serviceCenter.json.json"),
       },
-
+      {
+        path: "forbidden",
+        Component: Forbidden,
+      },
       {
         path: "beaRaider",
         element: (
@@ -95,15 +100,30 @@ export const router = createBrowserRouter([
       },
       {
         path: "pendingRiders",
-        Component: pendingRiders,
+        element: (
+          <AdminRoute>
+            {" "}
+            <PendingRiders></PendingRiders>{" "}
+          </AdminRoute>
+        ),
       },
       {
         path: "ActiveRider",
-        Component: ActiveRider,
+        element: (
+          <AdminRoute>
+            {" "}
+            <ActiveRider></ActiveRider>{" "}
+          </AdminRoute>
+        ),
       },
       {
         path: "MakeAdmin",
-        Component: MakeAdmin,
+        element: (
+          <AdminRoute>
+            {" "}
+            <MakeAdmin></MakeAdmin>{" "}
+          </AdminRoute>
+        ),
       },
     ],
   },

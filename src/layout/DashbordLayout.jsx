@@ -10,15 +10,25 @@ import {
   FaCrown,
   FaMotorcycle,
   FaUserClock,
-  FaUsers
+  FaUsers,
 } from "react-icons/fa";
-
-
 
 import { useState } from "react";
 import ShiftFirstLogo from "../pages/shared/Navbar/ShiftFirstLogo";
+import useUserRole from "../hook/useUserRole";
+
 
 const DashbordLayout = () => {
+
+const {role,isRoleLoading} = useUserRole();
+
+ console.log("User role:", role);
+
+
+
+
+
+
   const [collapsed, setCollapsed] = useState(false); // desktop
   const [mobileOpen, setMobileOpen] = useState(false); // mobile
 
@@ -94,26 +104,32 @@ const DashbordLayout = () => {
             label="Settings"
             collapsed={collapsed}
           />
-          <NavItem
-            to="/dashbord/ActiveRider"
-            icon={<FaMotorcycle />}
-            label="Active Riders"
-            collapsed={collapsed}
-          />
 
-          <NavItem
-            to="/dashbord/pendingRiders"
-            icon={<FaUserClock />}
-            label="Pending Riders"
-            collapsed={collapsed}
-          />
+          {!isRoleLoading && role  === 'admin' &&
+          
+            <>
+              <NavItem
+                to="/dashbord/ActiveRider"
+                icon={<FaMotorcycle />}
+                label="Active Riders"
+                collapsed={collapsed}
+              />
 
-          <NavItem
-            to="/dashbord/MakeAdmin"
-            icon={<FaUsers />}
-            label="Make Admin"
-            collapsed={collapsed}
-          />
+              <NavItem
+                to="/dashbord/pendingRiders"
+                icon={<FaUserClock />}
+                label="Pending Riders"
+                collapsed={collapsed}
+              />
+
+              <NavItem
+                to="/dashbord/MakeAdmin"
+                icon={<FaUsers />}
+                label="Make Admin"
+                collapsed={collapsed}
+              />
+            </>
+          }
         </nav>
       </aside>
 

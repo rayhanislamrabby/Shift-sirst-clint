@@ -8,7 +8,7 @@ const axiosSecure = axios.create({
 });
 
 const useAxiosSecures = () => {
-  const { user } = useAuth();
+  const { user, logOut } = useAuth();
 
   const navigate = useNavigate();
 
@@ -27,11 +27,15 @@ const useAxiosSecures = () => {
       return res;
     },
     (eroor) => {
-      console.log("inside res interseptor", eroor.status);
-
       const status = eroor.status;
       if (status === 403) {
         navigate("/forbidden");
+      } else if (status === 401) {
+        logOut()
+          .then(() => {
+            navigate("/login");
+          })
+          .catch(() => {});
       }
 
       return Promise.reject(eroor);

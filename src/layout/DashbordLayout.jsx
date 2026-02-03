@@ -17,17 +17,10 @@ import { useState } from "react";
 import ShiftFirstLogo from "../pages/shared/Navbar/ShiftFirstLogo";
 import useUserRole from "../hook/useUserRole";
 
-
 const DashbordLayout = () => {
+  const { role, isRoleLoading } = useUserRole();
 
-const {role,isRoleLoading} = useUserRole();
-
- console.log("User role:", role);
-
-
-
-
-
+  console.log("User role:", role);
 
   const [collapsed, setCollapsed] = useState(false); // desktop
   const [mobileOpen, setMobileOpen] = useState(false); // mobile
@@ -105,9 +98,15 @@ const {role,isRoleLoading} = useUserRole();
             collapsed={collapsed}
           />
 
-          {!isRoleLoading && role  === 'admin' &&
-          
+          {!isRoleLoading && role === "admin" && (
             <>
+              <NavItem
+                to="/dashbord/assign-raider"
+                icon={<FaMotorcycle />}
+                label="Assign Raider"
+                collapsed={collapsed}
+              />
+
               <NavItem
                 to="/dashbord/ActiveRider"
                 icon={<FaMotorcycle />}
@@ -129,7 +128,7 @@ const {role,isRoleLoading} = useUserRole();
                 collapsed={collapsed}
               />
             </>
-          }
+          )}
         </nav>
       </aside>
 

@@ -18,6 +18,7 @@ import ActiveRider from "../pages/Dashbord/ActiveRiders/ActiveRider";
 import MakeAdmin from "../pages/Dashbord/MakeAdmin/MakeAdmin";
 import Forbidden from "../pages/Forbidden/Forbidden";
 import AdminRoute from "../routers/AdminRoute";
+import AssignRaider from "../pages/Dashbord/AssignRaider/AssignRaider";
 
 export const router = createBrowserRouter([
   {
@@ -97,6 +98,15 @@ export const router = createBrowserRouter([
       {
         path: "PaymentHistory",
         Component: PaymentHistory,
+      },
+
+      {
+        path: "assign-raider",
+        element: (
+          <AdminRoute>
+            <AssignRaider></AssignRaider>{" "}
+          </AdminRoute>
+        ),
       },
       {
         path: "pendingRiders",

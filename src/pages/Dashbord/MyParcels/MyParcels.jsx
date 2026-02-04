@@ -19,6 +19,7 @@ const MyParcels = () => {
       const res = await axiosSecure.get(`/parcels?email=${user.email}`);
      
 
+console.log("Logged user email:", user?.email);
 
       return res.data;
     },

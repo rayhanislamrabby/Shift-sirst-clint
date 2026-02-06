@@ -20,7 +20,7 @@ import useUserRole from "../hook/useUserRole";
 const DashbordLayout = () => {
   const { role, isRoleLoading } = useUserRole();
 
-  console.log("User role:", role);
+
 
   const [collapsed, setCollapsed] = useState(false); // desktop
   const [mobileOpen, setMobileOpen] = useState(false); // mobile
@@ -98,6 +98,20 @@ const DashbordLayout = () => {
             collapsed={collapsed}
           />
 
+          {/* rider limks */}
+
+          {!isRoleLoading && role === "rider" && (
+            <>
+              <NavItem
+                to="/dashbord/PendingDeliveries"
+                icon={<FaMotorcycle />}
+                label="Pending Deliveries"
+                collapsed={collapsed}
+              />
+            </>
+          )}
+
+          {/* admin link */}
           {!isRoleLoading && role === "admin" && (
             <>
               <NavItem

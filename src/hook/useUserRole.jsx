@@ -6,8 +6,7 @@ const useUserRole = () => {
   const { user, loading: authLoading } = useAuth();
   const axiosSecure = useAxiosSecures();
 
-  console.log("USER from useAuth:", user);
-  console.log("authLoading:", authLoading);
+
 
   const {
     data: role = "", // default empty string

@@ -19,6 +19,8 @@ import MakeAdmin from "../pages/Dashbord/MakeAdmin/MakeAdmin";
 import Forbidden from "../pages/Forbidden/Forbidden";
 import AdminRoute from "../routers/AdminRoute";
 import AssignRaider from "../pages/Dashbord/AssignRaider/AssignRaider";
+import RaiderRout from "../routers/RaiderRout";
+import PendingDeliveries from "../pages/Dashbord/PendingDeliveries/PendingDeliveries";
 
 export const router = createBrowserRouter([
   {
@@ -33,7 +35,7 @@ export const router = createBrowserRouter([
       {
         path: "covarage",
         Component: Covarage,
-        loader: () => fetch("../../public/serviceCenter.json.json"),
+        loader: () => fetch("/public/serviceCenter.json"),
       },
       {
         path: "forbidden",
@@ -47,7 +49,7 @@ export const router = createBrowserRouter([
             <BeaRaider></BeaRaider>{" "}
           </PrivateRoutes>
         ),
-        loader: () => fetch("../../public/serviceCenter.json.json"),
+        loader: () => fetch("/public/serviceCenter.json"),
       },
 
       {
@@ -58,7 +60,7 @@ export const router = createBrowserRouter([
           </PrivateRoutes>
         ),
 
-        loader: () => fetch("../../public/serviceCenter.json.json"),
+        loader: () => fetch("/public/serviceCenter.json"),
       },
     ],
   },
@@ -99,6 +101,18 @@ export const router = createBrowserRouter([
         path: "PaymentHistory",
         Component: PaymentHistory,
       },
+
+      // rider only routes
+      {
+        path: "PendingDeliveries",
+        element: (
+          <RaiderRout>
+            {" "}
+            <PendingDeliveries></PendingDeliveries>{" "}
+          </RaiderRout>
+        ),
+      },
+      // admin only routes
 
       {
         path: "assign-raider",

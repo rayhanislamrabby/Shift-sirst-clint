@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useState, useMemo } from "react";
-import { useLoaderData } from "react-router";
+import { useLoaderData, useNavigate } from "react-router";
 import Swal from "sweetalert2";
 import useAuth from "../../hook/useAuth";
 import useAxiosSecures from "../../hook/useAxiosSecures";
@@ -19,7 +19,7 @@ const SendParcel = () => {
   const parcelType = watch("parcelType");
 
   const { user } = useAuth();
-
+const navigete = useNavigate()
   const axiosSecure = useAxiosSecures();
 
   /* ---------------- Local State ---------------- */
@@ -121,6 +121,7 @@ const SendParcel = () => {
       cancelButtonText: "Edit Parcel",
       confirmButtonColor: "#16a34a",
       cancelButtonColor: "#dc2626",
+  
     }).then((result) => {
       if (result.isConfirmed) {
         const finalData = {
@@ -133,8 +134,9 @@ const SendParcel = () => {
           payment_status: "unpaid",
           creation_date: new Date().toISOString(),
           tracking_id: generateTrackingId(),
+          
         };
-
+ 
         console.log("SAVE TO DATABASE:", finalData);
 
         axiosSecure.post("/parcels", finalData).then((res) => {
@@ -147,6 +149,7 @@ const SendParcel = () => {
               "success"
             );
           }
+           navigete("/dashbord/myparcels")
         });
       }
     });

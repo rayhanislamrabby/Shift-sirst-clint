@@ -86,13 +86,13 @@ const DashbordLayout = () => {
             collapsed={collapsed}
           />
           <NavItem
-            to="/dashbord/track"
+            // to="/dashbord/track"
             icon={<FaSearchLocation />}
             label="Tracking"
             collapsed={collapsed}
           />
           <NavItem
-            to="/dashbord/profile"
+            // to="/dashbord/profile"
             icon={<FaUserCog />}
             label="Settings"
             collapsed={collapsed}
@@ -106,6 +106,18 @@ const DashbordLayout = () => {
                 to="/dashbord/PendingDeliveries"
                 icon={<FaMotorcycle />}
                 label="Pending Deliveries"
+                collapsed={collapsed}
+              />
+              <NavItem
+                to="/dashbord/CompletedDeliveries"
+                icon={<FaMotorcycle />}
+                label="Completed Deliveries"
+                collapsed={collapsed}
+              />
+                <NavItem
+                to="/dashbord/MyEarnings"
+                icon={<FaMotorcycle />}
+                label="My Earnings"
                 collapsed={collapsed}
               />
             </>

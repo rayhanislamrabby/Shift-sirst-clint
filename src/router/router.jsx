@@ -21,6 +21,8 @@ import AdminRoute from "../routers/AdminRoute";
 import AssignRaider from "../pages/Dashbord/AssignRaider/AssignRaider";
 import RaiderRout from "../routers/RaiderRout";
 import PendingDeliveries from "../pages/Dashbord/PendingDeliveries/PendingDeliveries";
+import CompletedDeliveries from "../pages/Dashbord/CompletedDeliveries/CompletedDeliveries";
+import MyEarnings from "../pages/Dashbord/MyEarnings/MyEarnings";
 
 export const router = createBrowserRouter([
   {
@@ -111,6 +113,17 @@ export const router = createBrowserRouter([
             <PendingDeliveries></PendingDeliveries>{" "}
           </RaiderRout>
         ),
+      },
+      {
+path: "CompletedDeliveries",
+element: <RaiderRout> <CompletedDeliveries></CompletedDeliveries> </RaiderRout>
+
+        
+      },
+      {
+path: "MyEarnings",
+element: <RaiderRout><MyEarnings></MyEarnings> </RaiderRout>
+
       },
       // admin only routes
 

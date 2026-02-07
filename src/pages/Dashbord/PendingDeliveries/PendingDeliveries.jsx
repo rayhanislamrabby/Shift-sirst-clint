@@ -16,7 +16,7 @@ const PendingDeliveries = () => {
       return res.data.filter(
         (p) =>
           p.delivery_status === "rider_assigned" ||
-          p.delivery_status === "in_transit"
+          p.delivery_status === "in_transit",
       );
     },
   });
@@ -54,9 +54,7 @@ const PendingDeliveries = () => {
 
     Swal.fire({
       title:
-        nextStatus === "in_transit"
-          ? "Start delivery?"
-          : "Mark as delivered?",
+        nextStatus === "in_transit" ? "Start delivery?" : "Mark as delivered?",
       icon: "question",
       showCancelButton: true,
       confirmButtonText: "Yes",
@@ -85,6 +83,7 @@ const PendingDeliveries = () => {
               <th>Address</th>
               <th>Service Center</th>
               <th>Cost</th>
+              <th>Cost</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -97,7 +96,7 @@ const PendingDeliveries = () => {
                 <td>{parcel.senderAddress}</td>
                 <td>{parcel.receiverServiceCenter}</td>
                 <td>৳ {parcel.deliveryCost}</td>
-
+                <td>{parcel.delivery_status}</td>
                 <td>
                   <button
                     onClick={() => handleUpdate(parcel)}

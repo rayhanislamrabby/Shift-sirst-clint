@@ -1,33 +1,26 @@
-import React from 'react';
-import useAuth from '../../../hook/useAuth';
-import { useQuery } from '@tanstack/react-query';
-import useAxiosSecures from '../../../hook/useAxiosSecures';
+import useAuth from "../../../hook/useAuth";
+import { useQuery } from "@tanstack/react-query";
+import useAxiosSecures from "../../../hook/useAxiosSecures";
 
 const PaymentHistory = () => {
+  const { user } = useAuth();
+  const axiosSecure = useAxiosSecures();
 
-const {user} = useAuth();
-const axiosSecure = useAxiosSecures();
+  const { isPending, data: payments = [] } = useQuery({
+    queryKey: ["payments", user.email],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/payments?email=${user.email}`);
 
-const {isPending, data: payments = []} = useQuery( {
-queryKey: ['payments', user.email],
-queryFn: async() => {
-const res = await axiosSecure.get(`/payments?email=${user.email}`);
+      return res.data;
+    },
+  });
 
-return res.data;
-
-}
-
-})
-
-if(isPending){
-return 'loadingg...'
-
-}
-    return (
-          <div className="bg-white rounded-lg border p-4 md:p-6">
-      <h2 className="text-lg md:text-xl font-semibold mb-4">
-        Payment History
-      </h2>
+  if (isPending) {
+    return "loadingg...";
+  }
+  return (
+    <div className="bg-white rounded-lg border p-4 md:p-6">
+      <h2 className="text-lg md:text-xl font-semibold mb-4">Payment History</h2>
 
       {payments.length === 0 ? (
         <p className="text-slate-500">No payment records found.</p>
@@ -47,23 +40,16 @@ return 'loadingg...'
 
             <tbody>
               {payments.map((payment, index) => (
-                <tr
-                  key={payment._id}
-                  className="border-b hover:bg-slate-50"
-                >
+                <tr key={payment._id} className="border-b hover:bg-slate-50">
                   <td className="py-3 px-3">{index + 1}</td>
 
                   <td className="py-3 px-3 font-mono text-xs text-blue-600">
                     {payment.transaction_id}
                   </td>
 
-                  <td className="py-3 px-3">
-                    {payment.parcel_id || "—"}
-                  </td>
+                  <td className="py-3 px-3">{payment.parcel_id || "—"}</td>
 
-                  <td className="py-3 px-3 font-medium">
-                    ${payment.amount}
-                  </td>
+                  <td className="py-3 px-3 font-medium">${payment.amount}</td>
 
                   <td className="py-3 px-3">
                     <span className="px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-700">
@@ -81,7 +67,7 @@ return 'loadingg...'
         </div>
       )}
     </div>
-    );
+  );
 };
 
 export default PaymentHistory;

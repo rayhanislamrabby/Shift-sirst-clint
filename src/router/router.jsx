@@ -115,15 +115,21 @@ export const router = createBrowserRouter([
         ),
       },
       {
-path: "CompletedDeliveries",
-element: <RaiderRout> <CompletedDeliveries></CompletedDeliveries> </RaiderRout>
-
-        
+        path: "CompletedDeliveries",
+        element: (
+          <RaiderRout>
+            {" "}
+            <CompletedDeliveries></CompletedDeliveries>{" "}
+          </RaiderRout>
+        ),
       },
       {
-path: "MyEarnings",
-element: <RaiderRout><MyEarnings></MyEarnings> </RaiderRout>
-
+        path: "MyEarnings",
+        element: (
+          <RaiderRout>
+            <MyEarnings></MyEarnings>{" "}
+          </RaiderRout>
+        ),
       },
       // admin only routes
 

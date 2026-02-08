@@ -1,43 +1,59 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import useAxiosSecures from "../../../hook/useAxiosSecures";
+import useTrackingLogger from "../../../hook/useTrackingLogger";
+import useAuth from "../../../hook/useAuth";
 
 const PendingDeliveries = () => {
   const axiosSecure = useAxiosSecures();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const { logTracking } = useTrackingLogger();
 
-  /* ================= LOAD rider_assigned + in_transit ================= */
-  const { data: parcels = [] } = useQuery({
+  /* ================= LOAD ACTIVE PARCELS ================= */
+  const { data: parcels = [], isLoading } = useQuery({
     queryKey: ["pending-deliveries"],
     queryFn: async () => {
       const res = await axiosSecure.get("/parcels");
 
-      // only show active delivery flow
       return res.data.filter(
         (p) =>
           p.delivery_status === "rider_assigned" ||
-          p.delivery_status === "in_transit",
+          p.delivery_status === "in_transit"
       );
     },
   });
 
-  /* ================= STATUS UPDATE MUTATION ================= */
+  /* ================= STATUS UPDATE ================= */
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }) => {
       const res = await axiosSecure.patch(`/parcels/${id}/status`, { status });
       return res.data;
     },
 
-    onSuccess: (_, variables) => {
-      if (variables.status === "in_transit") {
-        Swal.fire("Success!", "Parcel is now In Transit", "success");
+    onSuccess: async (_, variables) => {
+      const { parcel, status } = variables;
+
+      // success alert
+      if (status === "in_transit") {
+        Swal.fire("Success!", "Parcel picked up successfully", "success");
       }
 
-      if (variables.status === "delivered") {
+      if (status === "delivered") {
         Swal.fire("Delivered!", "Parcel delivered successfully", "success");
       }
 
-      // 🔄 refresh list
+      // ✅ TRACKING LOG
+      await logTracking({
+        tracking_id: parcel.tracking_id,
+        status,
+        details:
+          status === "in_transit"
+            ? `Picked up by ${user.displayName}`
+            : "Parcel delivered successfully",
+        updated_by: user.email,
+      });
+
       queryClient.invalidateQueries(["pending-deliveries"]);
     },
   });
@@ -63,10 +79,13 @@ const PendingDeliveries = () => {
         updateStatusMutation.mutate({
           id: parcel._id,
           status: nextStatus,
+          parcel, // 🔥 parcel pass করা হলো
         });
       }
     });
   };
+
+  if (isLoading) return <p className="text-center mt-10">Loading...</p>;
 
   return (
     <div className="p-4 md:p-6">
@@ -83,7 +102,7 @@ const PendingDeliveries = () => {
               <th>Address</th>
               <th>Service Center</th>
               <th>Cost</th>
-              <th>Cost</th>
+              <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -102,8 +121,8 @@ const PendingDeliveries = () => {
                     onClick={() => handleUpdate(parcel)}
                     className={`btn btn-xs md:btn-sm text-white ${
                       parcel.delivery_status === "rider_assigned"
-                        ? "bg-green-600 hover:bg-green-700" // start
-                        : "bg-blue-600 hover:bg-blue-700" // make delivery
+                        ? "bg-green-600 hover:bg-green-700"
+                        : "bg-blue-600 hover:bg-blue-700"
                     }`}
                   >
                     {parcel.delivery_status === "rider_assigned"

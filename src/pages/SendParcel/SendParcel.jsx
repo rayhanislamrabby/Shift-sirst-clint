@@ -4,6 +4,7 @@ import { useLoaderData, useNavigate } from "react-router";
 import Swal from "sweetalert2";
 import useAuth from "../../hook/useAuth";
 import useAxiosSecures from "../../hook/useAxiosSecures";
+import useTrackingLogger from "../../hook/useTrackingLogger";
 
 const generateTrackingId = () => {
   const date = new Date().toISOString().slice(0, 10);
@@ -20,6 +21,7 @@ const SendParcel = () => {
 
   const { user } = useAuth();
 const navigete = useNavigate()
+const {logTracking} =useTrackingLogger()
   const axiosSecure = useAxiosSecures();
 
   /* ---------------- Local State ---------------- */
@@ -124,6 +126,7 @@ const navigete = useNavigate()
   
     }).then((result) => {
       if (result.isConfirmed) {
+        const tracking_id = generateTrackingId();
         const finalData = {
           ...data,
           senderDistrict,
@@ -133,13 +136,13 @@ const navigete = useNavigate()
           delivery_status: "not_collected",
           payment_status: "unpaid",
           creation_date: new Date().toISOString(),
-          tracking_id: generateTrackingId(),
+          tracking_id: tracking_id,
           
         };
  
         console.log("SAVE TO DATABASE:", finalData);
 
-        axiosSecure.post("/parcels", finalData).then((res) => {
+        axiosSecure.post("/parcels", finalData).then( async (res) => {
           console.log(res.data);
 
           if (res.data.insertedId) {
@@ -149,6 +152,14 @@ const navigete = useNavigate()
               "success"
             );
           }
+await logTracking({
+  tracking_id: finalData.tracking_id,
+  status: "Parcel_created",
+  details: `created by ${user.displayName}`,
+
+  updated_by: user.email,
+})
+
            navigete("/dashbord/myparcels")
         });
       }
@@ -318,7 +329,7 @@ const navigete = useNavigate()
                     </option>
                   ))}
               </select>
-
+ 
               <textarea
                 className="textarea textarea-bordered bg-white text-black md:col-span-2"
                 placeholder="Delivery Address"

@@ -1,16 +1,19 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import useAxiosSecures from "../../../hook/useAxiosSecures";
+import useTrackingLogger from "../../../hook/useTrackingLogger";
+import useAuth from "../../../hook/useAuth";
 
 const AssignRider = () => {
   const axiosSecure = useAxiosSecures();
   const queryClient = useQueryClient();
+  const { logTracking } = useTrackingLogger();
+  const { user } = useAuth();
 
   const [openModal, setOpenModal] = useState(false);
   const [selectedParcel, setSelectedParcel] = useState(null);
-  const [assigningId, setAssigningId] = useState(null); // 🔥 only clicked rider loading
+  const [assigningId, setAssigningId] = useState(null);
 
   /* ================= LOAD PARCELS ================= */
   const { data: parcels = [], isLoading } = useQuery({
@@ -23,7 +26,7 @@ const AssignRider = () => {
 
   /* ================= FILTER ================= */
   const filteredParcels = parcels.filter(
-    (p) => p.payment_status === "paid" && p.delivery_status === "not_collected"
+    (p) => p.payment_status === "paid" && p.delivery_status === "not_collected",
   );
 
   /* ================= LOAD RIDERS ================= */
@@ -32,7 +35,7 @@ const AssignRider = () => {
     enabled: !!selectedParcel,
     queryFn: async () => {
       const res = await axiosSecure.get(
-        `/riders/available?serviceCenter=${selectedParcel.senderServiceCenter}`
+        `/riders/available?serviceCenter=${selectedParcel.senderServiceCenter}`,
       );
       return res.data;
     },
@@ -51,19 +54,28 @@ const AssignRider = () => {
 
       const res = await axiosSecure.patch(
         `/parcels/assign/${selectedParcel._id}`,
-        payload
+        payload,
       );
 
-      return res.data;
+      // rider return করলাম যাতে onSuccess এ use করা যায়
+      return { res: res.data, rider };
     },
 
-    onSuccess: async () => {
+    onSuccess: async ({ rider }) => {
       await Swal.fire({
         icon: "success",
         title: "Rider Assigned!",
         text: "Parcel is now in transit.",
         timer: 1500,
         showConfirmButton: false,
+      });
+
+      // ✅ Correct tracking log
+      await logTracking({
+        tracking_id: selectedParcel.tracking_id,
+        status: "rider_assigned",
+        details: `Assigned to ${rider.name} Rider`,
+        updated_by: user.email,
       });
 
       setOpenModal(false);

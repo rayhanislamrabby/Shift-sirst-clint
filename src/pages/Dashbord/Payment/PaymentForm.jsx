@@ -5,8 +5,7 @@ import { useParams, useNavigate } from "react-router";
 import useAxiosSecures from "../../../hook/useAxiosSecures";
 import useAuth from "../../../hook/useAuth";
 import Swal from "sweetalert2";
-
-
+import useTrackingLogger from "../../../hook/useTrackingLogger";
 
 function PaymentForm() {
   const stripe = useStripe();
@@ -17,6 +16,7 @@ function PaymentForm() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecures();
+  const { logTracking } = useTrackingLogger();
 
   const { isPending, data: parcelInfo = {} } = useQuery({
     queryKey: ["parcels", parcelId],
@@ -92,11 +92,7 @@ function PaymentForm() {
     } else {
       setError("");
       if (result.paymentIntent.status === "succeeded") {
-
-const  transaction_id = result.paymentIntent.id
-
-
-
+        const transaction_id = result.paymentIntent.id;
 
         //  step -4 mark parcel paid aslo creat payment history
 
@@ -111,12 +107,9 @@ const  transaction_id = result.paymentIntent.id
 
         const paymentRes = await axiosSecure.post("/payments", paymentData);
 
-
-          console.log("paymentRes:", paymentRes);
+        console.log("paymentRes:", paymentRes);
         // Add a console.log to debug the SweetAlert issue
         if (paymentRes.data.success) {
-       
-
           // ✅ SweetAlert with transaction ID
           await Swal.fire({
             icon: "success",
@@ -124,11 +117,17 @@ const  transaction_id = result.paymentIntent.id
             html: `
       <p class="mb-2">Your payment has been completed.</p>
       <p><strong>Transaction ID:</strong></p>
-      <code style="color:green;">${ transaction_id}</code>
+      <code style="color:green;">${transaction_id}</code>
     `,
             confirmButtonText: "Go to My Parcels",
           });
-
+          await logTracking({
+            tracking_id: parcelInfo.tracking_id,
+            status: "payment_done",
+            details: `paid by ${user.displayName}`,
+         
+            updated_by: user.email,
+          });
           // 🚀 Navigate after confirmation
           navigate("/dashbord/myParcels");
         }

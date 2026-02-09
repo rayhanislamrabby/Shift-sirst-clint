@@ -23,6 +23,7 @@ import RaiderRout from "../routers/RaiderRout";
 import PendingDeliveries from "../pages/Dashbord/PendingDeliveries/PendingDeliveries";
 import CompletedDeliveries from "../pages/Dashbord/CompletedDeliveries/CompletedDeliveries";
 import MyEarnings from "../pages/Dashbord/MyEarnings/MyEarnings";
+import Dashbordhome from "../pages/Dashbord/DashbordHome/Dashbordhome";
 
 export const router = createBrowserRouter([
   {
@@ -91,6 +92,10 @@ export const router = createBrowserRouter([
     ),
 
     children: [
+      {
+      index: true,
+      Component: Dashbordhome,
+      },
       {
         path: "myParcels",
         Component: MyParcels,

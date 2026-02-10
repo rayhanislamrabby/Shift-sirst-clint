@@ -7,7 +7,7 @@ const Coverage = () => {
 
 const serviceCenter = useLoaderData();
 
-console.log(serviceCenter)
+// console.log(serviceCenter)
 
   return (
     <div className="min-h-screen bg-base-200 px-4 py-10 sm:py-12">

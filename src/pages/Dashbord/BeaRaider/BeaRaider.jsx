@@ -31,7 +31,7 @@ const BeaRider = () => {
       created_at: new Date().toISOString(),
     };
 
-    console.log("RIDER APPLICATION DATA:", finalData);
+    // console.log("RIDER APPLICATION DATA:", finalData);
 
     axiosSecure
       .post("/riders", finalData)

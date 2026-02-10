@@ -11,7 +11,7 @@ import Accordion from "../Accordion/Accordion";
 const Home = () => {
   return (
     <div>
-      <h2>This is Home </h2>
+    
       <Baneer></Baneer>
       <Delivery></Delivery>
       <Services></Services>

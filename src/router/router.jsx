@@ -38,7 +38,7 @@ export const router = createBrowserRouter([
       {
         path: "covarage",
         Component: Covarage,
-        loader: () => fetch("/public/serviceCenter.json"),
+        loader: () => fetch("serviceCenter.json"),
       },
       {
         path: "forbidden",
@@ -52,7 +52,7 @@ export const router = createBrowserRouter([
             <BeaRaider></BeaRaider>{" "}
           </PrivateRoutes>
         ),
-        loader: () => fetch("/public/serviceCenter.json"),
+        loader: () => fetch("serviceCenter.json"),
       },
 
       {
@@ -63,7 +63,7 @@ export const router = createBrowserRouter([
           </PrivateRoutes>
         ),
 
-        loader: () => fetch("/public/serviceCenter.json"),
+        loader: () => fetch("serviceCenter.json"),
       },
     ],
   },

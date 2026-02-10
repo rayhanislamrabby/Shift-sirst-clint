@@ -107,7 +107,7 @@ function PaymentForm() {
 
         const paymentRes = await axiosSecure.post("/payments", paymentData);
 
-        console.log("paymentRes:", paymentRes);
+        // console.log("paymentRes:", paymentRes);
         // Add a console.log to debug the SweetAlert issue
         if (paymentRes.data.success) {
           // ✅ SweetAlert with transaction ID
